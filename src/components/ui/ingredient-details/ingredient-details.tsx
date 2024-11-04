@@ -1,14 +1,27 @@
 import React, { FC, memo } from 'react';
 import styles from './ingredient-details.module.css';
 import { IngredientDetailsUIProps } from './type';
+import { useLocation } from 'react-router-dom';
+import clsx from 'clsx';
 
 export const IngredientDetailsUI: FC<IngredientDetailsUIProps> = memo(
   ({ ingredientData }) => {
     const { name, image_large, calories, proteins, fat, carbohydrates } =
       ingredientData;
+    const location = useLocation();
+    const localState = location.state;
 
     return (
-      <div className={styles.content}>
+      <div
+        className={clsx(styles.content, {
+          [styles.content_center]: !localState
+        })}
+      >
+        {!localState && (
+          <h3 className={`${styles.title} text text_type_main-large`}>
+            Детали ингридиента
+          </h3>
+        )}
         <img
           className={styles.img}
           alt='изображение ингредиента.'
