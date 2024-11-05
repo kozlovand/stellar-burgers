@@ -1,4 +1,4 @@
-import { getFeedsApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi } from '@api';
 import {
   SerializedError,
   createAsyncThunk,
@@ -12,6 +12,7 @@ interface ordersState {
   totalToday: number;
   error: SerializedError | null | unknown;
   ordersLoading: boolean;
+  order: Array<TOrder>;
 }
 
 const initialState: ordersState = {
@@ -19,10 +20,13 @@ const initialState: ordersState = {
   total: 0,
   totalToday: 0,
   error: '',
-  ordersLoading: false
+  ordersLoading: false,
+  order: []
 };
 
 export const getOrders = createAsyncThunk('burger/orders', getFeedsApi);
+
+export const getOrder = createAsyncThunk('burger/order', getOrderByNumberApi);
 
 export const ordersSlice = createSlice({
   name: 'orders',
@@ -43,16 +47,33 @@ export const ordersSlice = createSlice({
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
         state.ordersLoading = false;
+      })
+      .addCase(getOrder.pending, (state) => {
+        state.error = null;
+        state.ordersLoading = true;
+      })
+      .addCase(getOrder.rejected, (state, action) => {
+        state.error = action.payload;
+        state.ordersLoading = false;
+      })
+      .addCase(getOrder.fulfilled, (state, action) => {
+        state.order = action.payload.orders;
+        state.ordersLoading = false;
       });
   },
   selectors: {
     getOrdersSelector: (state) => state.orders,
     getTotalsSelector: (state) => state.total,
     getTotalTodaySelector: (state) => state.totalToday,
-    loadingSelector: (state) => state.ordersLoading
+    loadingSelector: (state) => state.ordersLoading,
+    selectOrder: (state) => state.order
   }
 });
 
 export const ordersReduсer = ordersSlice.reducer;
-export const { getOrdersSelector, getTotalsSelector, getTotalTodaySelector } =
-  ordersSlice.selectors;
+export const {
+  getOrdersSelector,
+  getTotalsSelector,
+  getTotalTodaySelector,
+  selectOrder
+} = ordersSlice.selectors;

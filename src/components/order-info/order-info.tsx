@@ -1,25 +1,24 @@
-import { FC, useMemo } from 'react';
+import { FC, useEffect, useMemo } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useSelector } from '../../services/store';
-import { getOrdersSelector } from '../../services/slices/order/ordersSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import { getOrder, selectOrder } from '../../services/slices/order/ordersSlice';
 import { getIngrediensSelector } from '../../services/slices/burger/ingredientSlice';
 import { useParams } from 'react-router-dom';
-import { getMyOrdersSelector } from '../../services/slices/order/myOrderSlice';
 
 export const OrderInfo: FC = () => {
+  const dispatch = useDispatch();
   const { number } = useParams<string>();
-  const orders = useSelector(getOrdersSelector);
-  const myOrders = useSelector(getMyOrdersSelector);
-  let currentOrder = orders.find(function (item) {
-    return item.number === Number(number);
-  });
-  if (!currentOrder) {
-    currentOrder = myOrders.find(function (item) {
-      return item.number === Number(number);
-    });
-  }
+  const orderNumber = Number(number);
+
+  const currentOrder = useSelector(selectOrder).find(
+    (item) => item.number === orderNumber
+  );
+
+  useEffect(() => {
+    dispatch(getOrder(orderNumber));
+  }, [dispatch]);
   /** TODO: взять переменные orderData и ingredients из стора */
   const orderData = currentOrder;
   const ingredients: TIngredient[] = useSelector(getIngrediensSelector);

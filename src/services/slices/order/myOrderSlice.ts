@@ -24,13 +24,7 @@ export const initialState: IOrderSliceState = {
   orders: []
 };
 
-export const makeOrder = createAsyncThunk(
-  'order/makeOrder',
-  async (data: string[]) => {
-    const dataOrder = await orderBurgerApi(data);
-    return dataOrder;
-  }
-);
+export const makeOrder = createAsyncThunk('order/makeOrder', orderBurgerApi);
 
 export const getMyOrders = createAsyncThunk('order/getOrder', getOrdersApi);
 

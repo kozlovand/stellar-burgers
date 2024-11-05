@@ -11,7 +11,10 @@ export const Feed: FC = () => {
   const dispatch = useDispatch();
   /** TODO: взять переменную из стора */
 
-  const orders: TOrder[] = useSelector(getOrdersSelector);
+  const orders = useSelector(getOrdersSelector);
+  useEffect(() => {
+    dispatch(getOrders());
+  }, [dispatch]);
   if (!orders.length) {
     return <Preloader />;
   }

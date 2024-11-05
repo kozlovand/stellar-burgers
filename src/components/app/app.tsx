@@ -15,26 +15,22 @@ import styles from './app.module.css';
 import { AppHeader, IngredientDetails, Modal, OrderInfo } from '@components';
 import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
+import { useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/burger/ingredientSlice';
-import { getOrders } from '../../services/slices/order/ordersSlice';
 import { ProtectedRoute } from '../../components/protectedRoute/protectedRoute';
-import {
-  getUserThunk,
-  isAuthenticatedSelector
-} from '../../services/slices/auth/userSlice';
+import { getUserThunk } from '../../services/slices/auth/userSlice';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let location = useLocation();
-
+  console.log(location);
   const backgroundLocation = location.state as {
     background?: string;
     orderNumber?: string;
   };
+
   useEffect(() => {
     dispatch(getIngredients());
-    dispatch(getOrders());
     dispatch(getUserThunk());
   }, [dispatch]);
 
@@ -107,7 +103,7 @@ const App = () => {
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {backgroundLocation && (
+      {backgroundLocation?.background && (
         <Routes>
           <Route
             path='/feed/:number'
