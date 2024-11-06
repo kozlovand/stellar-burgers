@@ -23,7 +23,7 @@ const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   let location = useLocation();
-  console.log(location);
+
   const backgroundLocation = location.state as {
     background?: string;
     orderNumber?: string;
