@@ -1,4 +1,4 @@
-import { getFeedsApi, getOrderByNumberApi } from '@api';
+import { getFeedsApi, getOrderByNumberApi } from '../../../utils/burger-api';
 import {
   SerializedError,
   createAsyncThunk,
@@ -15,7 +15,7 @@ interface ordersState {
   order: Array<TOrder>;
 }
 
-const initialState: ordersState = {
+export const initialState: ordersState = {
   orders: [],
   total: 0,
   totalToday: 0,

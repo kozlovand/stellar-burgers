@@ -11,7 +11,7 @@ import { ordersReduсer } from './slices/order/ordersSlice';
 import { userReduсer } from './slices/auth/userSlice';
 import { orderReduсer } from './slices/order/myOrderSlice';
 
-const rootReducer = combineReducers({
+export const rootReducer = combineReducers({
   ingredients: ingredientReduсer,
   burger: constructorReduсer,
   orders: ordersReduсer,
@@ -19,7 +19,7 @@ const rootReducer = combineReducers({
   order: orderReduсer
 }); // Заменить на импорт настоящего редьюсера
 
-const store = configureStore({
+export const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });

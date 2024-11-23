@@ -18,7 +18,11 @@ import { useEffect } from 'react';
 import { useDispatch } from '../../services/store';
 import { getIngredients } from '../../services/slices/burger/ingredientSlice';
 import { ProtectedRoute } from '../../components/protectedRoute/protectedRoute';
-import { getUserThunk } from '../../services/slices/auth/userSlice';
+import {
+  dataSelector,
+  getUserThunk
+} from '../../services/slices/auth/userSlice';
+import { useSelector } from 'react-redux';
 const App = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -122,7 +126,7 @@ const App = () => {
             path='/ingredients/:id'
             element={
               <Modal
-                title='Детали ингридиента'
+                title='Детали ингредиента'
                 onClose={function () {
                   navigate(-1);
                 }}

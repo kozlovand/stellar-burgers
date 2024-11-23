@@ -6,7 +6,7 @@ import {
   logoutApi,
   registerUserApi,
   updateUserApi
-} from '@api';
+} from '../../../utils/burger-api';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { TUser } from '@utils-types';
 import { deleteCookie, setCookie } from '../../../utils/cookie';
@@ -15,11 +15,11 @@ export interface UserState {
   isAuthChecked: boolean;
   isAuthenticated: boolean;
   data: null | TUser;
-  UserError: null | string;
+  UserError: null | string | unknown;
   UserRequest: boolean;
 }
 
-const initialState: UserState = {
+export const initialState: UserState = {
   isAuthChecked: false,
   isAuthenticated: false,
   data: null,
@@ -68,14 +68,15 @@ export const userSlice = createSlice({
       state.UserRequest = true;
       state.UserError = null;
     });
-    builder.addCase(loginUserThunk.rejected, (state) => {
+    builder.addCase(loginUserThunk.rejected, (state, action) => {
       state.UserRequest = false;
       state.isAuthChecked = true;
-      state.UserError = 'Неверные данные пользователя';
+      state.UserError = action.payload;
     });
     builder.addCase(loginUserThunk.fulfilled, (state, action) => {
       state.isAuthChecked = true;
       state.isAuthenticated = true;
+      state.UserRequest = false;
       state.data = action.payload;
     });
     builder.addCase(registerUserThunk.pending, (state) => {
@@ -85,52 +86,56 @@ export const userSlice = createSlice({
     builder.addCase(registerUserThunk.rejected, (state, action) => {
       state.UserRequest = false;
       state.isAuthChecked = true;
-      state.UserError = 'Неверные данные пользователя';
+      state.UserError = action.payload;
     });
     builder.addCase(registerUserThunk.fulfilled, (state, action) => {
       state.isAuthChecked = true;
       state.isAuthenticated = true;
+      state.UserRequest = false;
       state.data = action.payload;
     });
     builder.addCase(getUserThunk.pending, (state) => {
       state.UserRequest = true;
       state.UserError = null;
     });
-    builder.addCase(getUserThunk.rejected, (state) => {
+    builder.addCase(getUserThunk.rejected, (state, action) => {
       state.isAuthChecked = true;
       state.UserRequest = false;
-      state.UserError = 'Ошибка получения пользователя';
+      state.UserError = action.payload;
     });
     builder.addCase(getUserThunk.fulfilled, (state, { payload }) => {
       state.isAuthChecked = true;
       state.isAuthenticated = true;
+      state.UserRequest = false;
       state.data = payload.user;
     });
     builder.addCase(updateUserThunk.pending, (state) => {
       state.UserRequest = true;
       state.UserError = null;
     });
-    builder.addCase(updateUserThunk.rejected, (state) => {
+    builder.addCase(updateUserThunk.rejected, (state, action) => {
       state.isAuthChecked = true;
       state.UserRequest = false;
-      state.UserError = 'Ошибка обновления данных пользователя';
+      state.UserError = action.payload;
     });
     builder.addCase(updateUserThunk.fulfilled, (state, { payload }) => {
       state.isAuthChecked = true;
+      state.UserRequest = false;
       state.data = payload.user;
     });
     builder.addCase(logoutUserThunk.pending, (state) => {
       state.UserRequest = true;
       state.UserError = null;
     });
-    builder.addCase(logoutUserThunk.rejected, (state) => {
+    builder.addCase(logoutUserThunk.rejected, (state, action) => {
       state.isAuthChecked = true;
       state.UserRequest = false;
-      state.UserError = 'Ошибка выхода из аккаунта';
+      state.UserError = action.payload;
     });
     builder.addCase(logoutUserThunk.fulfilled, (state) => {
       state.isAuthChecked = true;
       state.isAuthenticated = false;
+      state.UserRequest = false;
       state.data = null;
     });
   },
